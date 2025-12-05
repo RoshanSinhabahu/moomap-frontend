@@ -9,7 +9,7 @@ export default function Login({ onLogin }) {
 
     if (name === 'admin' && password === 'admin') {
       onLogin({
-        name: 'Admin User',
+        name: 'Roshan',
         initials: 'AU',
         email: 'admin@moomap.local',
       });

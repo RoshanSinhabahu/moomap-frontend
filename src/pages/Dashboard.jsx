@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
-import TopBar from '../components/TopBar.jsx';
+import UserAvatar from '../components/UserAvatar.jsx';
 import MapView from '../components/MapView.jsx';
 import useDevices from '../hooks/useDevices.js';
 
@@ -16,15 +16,14 @@ export default function Dashboard({ user, onLogout }) {
         toggle={() => setSidebarOpen((v) => !v)}
         user={user}
         devices={devices}
-        selected={selected}
+        selectedDevice={selected}
+        onSelectDevice={setSelected}
+        onLogout={onLogout}
       />
-
       <div className="flex-1 relative">
-        <TopBar
+        <UserAvatar
           user={user}
           toggleSidebar={() => setSidebarOpen((v) => !v)}
-          onLogout={onLogout}
-          className="z-50 relative"
         />
         <MapView devices={devices} onSelectDevice={setSelected} />
       </div>
