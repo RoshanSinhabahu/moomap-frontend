@@ -10,6 +10,7 @@ export function fakeFetchDevices() {
           battery: Math.floor(Math.random() * 80) + 20,
           signal: Math.floor(Math.random() * 5) + 1,
           desc: 'Grazing and healthy',
+          status: 'Active',
         }))
       );
     }, 400);
