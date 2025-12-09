@@ -65,10 +65,11 @@ export default function MapView({ devices, onSelectDevice }) {
                   {getSignalIcon(d.signal)}
                 </div>
               </div>
-              
             </div>
-            <hr className='my-3'></hr>
-            <div className='text-center text-xs text-gray-400'>Click marker to see details</div>
+            <hr className="my-3"></hr>
+            <div className="text-center text-xs text-gray-400">
+              Click marker to see details
+            </div>
           </Popup>
         </Marker>
       ))}

@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function DeviceList({
   devices,
   selectedDevice,
   onSelectDevice,
 }) {
+  // Set first device as default on mount
+  useEffect(() => {
+    if (devices.length > 0 && !selectedDevice) {
+      onSelectDevice(devices[0]);
+    }
+  }, [devices, selectedDevice, onSelectDevice]);
+
   return (
     <div className="mt-3 pt-3 px-2 bg-white rounded-lg">
       <h3 className="ml-2 font-medium text-sm">Devices</h3>
