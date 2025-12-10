@@ -1,23 +1,36 @@
-import React from 'react';
-import Logo from '../assets/cowhead-logo.png';
-import { HiArrowRight } from 'react-icons/hi';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Logo from "../assets/cowhead-logo.png";
+import { HiArrowRight } from "react-icons/hi";
 
 export default function Login({ onLogin }) {
-  function handleSubmit(e) {
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    const name = e.target.username.value.trim();
+    const mobile = e.target.username.value.trim(); // your API uses mobile
     const password = e.target.password.value.trim();
 
-    if (name === 'admin' && password === 'admin') {
-      onLogin({
-        name: 'Roshan',
-        initials: 'AU',
-        email: 'admin@moomap.local',
+    try {
+      const res = await fetch("http://213.199.51.193:8000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile, password }),
       });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Check Mobile or Password");
+
+      // Save user and token
+      onLogin(data.user, data.token);
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
     }
   }
-
   return (
     <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0f253a] to-[#0f3147] p-4">
       <div className="flex w-full max-w-4xl bg-white/10 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl">
@@ -31,7 +44,7 @@ export default function Login({ onLogin }) {
           {/* Content */}
           <div className="flex flex-col z-10 mb-6 items-start">
             <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-              <img src={Logo} className='p-1'></img>
+              <img src={Logo} className="p-1"></img>
             </div>
             <div className="text-3xl font-semibold">
               Intelligent Cattle Monitoring System
@@ -64,15 +77,15 @@ export default function Login({ onLogin }) {
           <form onSubmit={handleSubmit} className="h-full flex flex-col gap-3">
             <input
               name="username"
-              placeholder="Username"
-              defaultValue="admin"
+              placeholder="Mobile Number"
+              defaultValue="0714567890"
               className="pl-6 border-2 rounded-full w-full h-10 focus:outline-none focus:ring-2 focus:ring-[#1b3e66]-400"
             />
             <input
               name="password"
               type="password"
               placeholder="Password"
-              defaultValue="admin"
+              defaultValue="mypassword123"
               className="pl-6 border-2 rounded-full w-full h-10 focus:outline-none focus:ring-2 focus:ring-[#1b3e66]-400"
             />
 

@@ -4,10 +4,10 @@ import UserAvatar from '../components/UserAvatar.jsx';
 import MapView from '../components/MapView.jsx';
 import useDevices from '../hooks/useDevices.js';
 
-export default function Dashboard({ user, onLogout }) {
+export default function Dashboard({ user, onLogout, token }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selected, setSelected] = useState(null);
-  const { devices } = useDevices();
+  const { devices } = useDevices(token);
 
   return (
     <div className="h-screen flex">

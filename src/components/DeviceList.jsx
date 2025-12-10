@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-export default function DeviceList({
-  devices,
-  selectedDevice,
-  onSelectDevice,
-}) {
+export default function DeviceTileList({ devices, selectedDevice, onSelectDevice }) {
+  const [open, setOpen] = useState(true); // start expanded or collapsed
+  const containerRef = useRef(null);
+
   // Set first device as default on mount
   useEffect(() => {
     if (devices.length > 0 && !selectedDevice) {
@@ -12,30 +11,55 @@ export default function DeviceList({
     }
   }, [devices, selectedDevice, onSelectDevice]);
 
+  // Close when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div className="mt-3 pt-3 px-2 bg-white rounded-lg">
-      <h3 className="ml-2 font-medium text-sm">Devices</h3>
-      <div className="mt-2 max-h-72 overflow-auto flex flex-col gap-1">
-        {devices.map((d) => (
-          <div
-            key={d.id}
-            className={`p-2 hover:bg-gray-100 rounded cursor-pointer ${
-              selectedDevice?.id === d.id ? 'bg-gray-100' : ''
-            }`}
-            onClick={() => onSelectDevice(d)}
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+    <div
+      ref={containerRef}
+      className={`bg-white rounded-lg shadow-md p-2 transition-all duration-300 ${
+        open ? 'w-full' : 'w-full'
+      }`}
+    > 
+      {/* Header / toggle */}
+      <div
+        className="flex items-center justify-between cursor-pointer p-1"
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <span className="font-medium">Devices</span>
+        <span>{open ? '<' : '>'}</span>
+      </div>
+
+      {/* Device tiles */}
+      {open && (
+        <div className="grid grid-cols-1 mt-2">
+          {devices.map((d) => (
+            <div
+              key={d.collarId}
+              className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 ${
+                selectedDevice?.collarId === d.collarId ? 'bg-gray-100' : ''
+              }`}
+              onClick={() => onSelectDevice(d)}
+            >
+              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                 🐄
               </div>
-              <div>
-                <div className="text-sm font-medium">{d.name}</div>
-                <div className="text-xs text-gray-500">{d.desc}</div>
+              <div className="flex flex-col text-sm">
+                <span className="font-medium">{d.name}</span>
+                <span className="text-gray-500">{d.breed}</span>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
