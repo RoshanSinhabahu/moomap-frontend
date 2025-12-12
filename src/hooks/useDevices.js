@@ -9,7 +9,7 @@ export default function useDevices(token) {
     async function fetchDevices() {
       try {
         // Fetch all cattle
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/cattles`, {
+        const res = await fetch('http://213.199.51.193:8000/api/cattles', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const cattles = await res.json();
@@ -18,7 +18,7 @@ export default function useDevices(token) {
         const devicesWithLocation = await Promise.all(
           cattles.map(async (cattle) => {
             const collarRes = await fetch(
-              `${import.meta.env.VITE_API_BASE_URL}/api/collar-data/${cattle.collarId}`,
+              `http://213.199.51.193:8000/api/collar-data/${cattle.collarId}`,
               { headers: { Authorization: `Bearer ${token}` } }
             );
             const collarData = await collarRes.json();
