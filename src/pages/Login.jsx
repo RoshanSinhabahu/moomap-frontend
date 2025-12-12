@@ -89,7 +89,7 @@ export default function Login({ onLogin }) {
               className="pl-6 border-2 rounded-full w-full h-10 focus:outline-none focus:ring-2 focus:ring-[#1b3e66]-400"
             />
 
-            <button className="text-[#1b3e66] hover:bg-[#1b3e66]/10 transition font-medium border-2 border-[#1b3e66] rounded-full w-full h-10 top-6 relative">
+            <button className="text-[#1b3e66] hover:bg-[#1b3e66]/10 active:bg-[#1b3e66] active:text-white transition font-medium border-2 border-[#1b3e66] rounded-full w-full h-10 top-6 relative">
               Login
             </button>
           </form>

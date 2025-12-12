@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 export default function useDevices(token) {
   const [devices, setDevices] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function fetchDevices() {
       try {
@@ -20,11 +22,14 @@ export default function useDevices(token) {
               { headers: { Authorization: `Bearer ${token}` } }
             );
             const collarData = await collarRes.json();
-
             return {
               ...cattle,
               lat: parseFloat(collarData.lastLocation?.lat) || 0,
               lng: parseFloat(collarData.lastLocation?.lon) || 0,
+              battery: collarData.lastBatteryPercent ?? 0,
+              signal: collarData.gsm_rssi || collarData.lora_rssi || -999,
+              status: collarData.status || 'unknown',
+              lastSeen: collarData.last_seen || collarData.lastSeen || null,
             };
           })
         );
@@ -32,11 +37,13 @@ export default function useDevices(token) {
         setDevices(devicesWithLocation);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
 
     if (token) fetchDevices();
   }, [token]);
 
-  return { devices };
+  return { devices, loading };
 }

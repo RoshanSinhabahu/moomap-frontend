@@ -7,34 +7,35 @@ export default function Sidebar({
   open,
   toggle,
   user,
+  token,
   devices,
   selectedDevice,
   onSelectDevice,
   onLogout,
+  loading,
 }) {
+  const [deviceListOpen, setDeviceListOpen] = React.useState(false);
+
   return (
     <div
       className={`bg-gray-50 h-full flex flex-col justify-between transition-all duration-300 ${open ? 'w-80 p-4' : 'w-14 p-2'}`}
     >
-      <UserInfo user={user} toggle={toggle} open={open} />
-      {open && (
-        <DeviceList
-          devices={devices}
-          selectedDevice={selectedDevice}
-          onSelectDevice={onSelectDevice}
-        />
-      )}
-      {open && <SelectedDeviceCard device={selectedDevice} />}
-      {open && (
-        <div>
-          <button
-            onClick={onLogout}
-            className="text-bold text-red-500 font-semibold border-2 border-red-300 hover:bg-red-100 transition p-2 w-full rounded-full top-4"
-          >
-            Logout
-          </button>
-        </div>
-      )}
+      <UserInfo user={user} token={token} toggle={toggle} open={open} onLogout={onLogout} />
+
+      <div className="scrollbar-hide w-full flex-1 overflow-y-auto flex flex-col items-center justify-evenly">
+        {open && (
+          <DeviceList
+            devices={devices}
+            selectedDevice={selectedDevice}
+            onSelectDevice={onSelectDevice}
+            isOpen={deviceListOpen}
+            onToggle={() => setDeviceListOpen(prev => !prev)}
+          />
+        )}
+        {open && !deviceListOpen && <SelectedDeviceCard device={selectedDevice} loading={loading} />}
+      </div>
+
+
     </div>
   );
 }
