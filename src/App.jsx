@@ -22,7 +22,7 @@ export default function App() {
 
   async function fetchCurrentUser(jwtToken) {
     try {
-      const res = await fetch("http://213.199.51.193:8000/api/users/me", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
       if (!res.ok) throw new Error("Failed to fetch user");

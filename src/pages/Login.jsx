@@ -13,7 +13,7 @@ export default function Login({ onLogin }) {
     const password = e.target.password.value.trim();
 
     try {
-      const res = await fetch("http://213.199.51.193:8000/api/users/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, password }),
