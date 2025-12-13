@@ -43,29 +43,29 @@ function RecenterAutomatically({ devices }) {
   return null;
 }
 
-function FlyToActiveDevice({ activeDevice }) {
+function FlyToActiveDevice({ activeDevice, focusTrigger }) {
   const map = useMap();
   const previousDeviceId = React.useRef(null);
+  const previousFocusTrigger = React.useRef(focusTrigger);
 
   useEffect(() => {
-    // Only fly to device when the selection changes (not on position updates)
+    // Only fly to device when the selection changes or focus is triggered
     if (activeDevice && activeDevice.lat && activeDevice.lng) {
       const currentId = activeDevice.collarId || activeDevice.cattleId;
+      const focusChanged = focusTrigger !== previousFocusTrigger.current;
 
-      // Only fly if this is a user-initiated selection change (not initial auto-selection)
-      // Skip if previousDeviceId is null (initial selection from auto-select)
-      if (previousDeviceId.current !== null && currentId !== previousDeviceId.current) {
+      // Fly if focus triggered OR if device changed (and not initial load)
+      if (focusChanged || (previousDeviceId.current !== null && currentId !== previousDeviceId.current)) {
         map.flyTo([activeDevice.lat, activeDevice.lng], 16, {
           animate: true,
         });
       }
       previousDeviceId.current = currentId;
-      // If same device, position updates automatically via marker, no need to fly
+      previousFocusTrigger.current = focusTrigger;
     } else if (!activeDevice) {
-      // Reset when no device is selected
       previousDeviceId.current = null;
     }
-  }, [activeDevice, map]);
+  }, [activeDevice, map, focusTrigger]);
 
   return null;
 }
@@ -100,7 +100,7 @@ function ZoomControl({ zoomTrigger }) {
   return null;
 }
 
-export default function MapView({ devices, onSelectDevice, selectedDevice }) {
+export default function MapView({ devices, onSelectDevice, selectedDevice, focusTrigger }) {
   const [recenterTrigger, setRecenterTrigger] = React.useState(0);
   const [zoomTrigger, setZoomTrigger] = React.useState({ action: null, count: 0 });
   const [filterActiveOnly, setFilterActiveOnly] = React.useState(false);
@@ -216,7 +216,7 @@ export default function MapView({ devices, onSelectDevice, selectedDevice }) {
       className="w-full h-full z-0"
     >
       <RecenterAutomatically devices={devices} />
-      <FlyToActiveDevice activeDevice={selectedDevice} />
+      <FlyToActiveDevice activeDevice={selectedDevice} focusTrigger={focusTrigger} />
       <RecenterMapButton devices={filteredDevices} triggerRecenter={recenterTrigger} />
       <ZoomControl zoomTrigger={zoomTrigger} />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

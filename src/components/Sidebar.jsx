@@ -11,6 +11,7 @@ export default function Sidebar({
   devices,
   selectedDevice,
   onSelectDevice,
+  onFocus,
   onLogout,
   loading,
 }) {
@@ -32,7 +33,7 @@ export default function Sidebar({
             onToggle={() => setDeviceListOpen(prev => !prev)}
           />
         )}
-        {open && !deviceListOpen && <SelectedDeviceCard device={selectedDevice} loading={loading} />}
+        {open && !deviceListOpen && <SelectedDeviceCard device={selectedDevice} onFocus={onFocus} loading={loading} />}
       </div>
 
 
