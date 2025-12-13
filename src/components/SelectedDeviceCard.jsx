@@ -10,12 +10,11 @@ import {
   SignalLow,
   SignalZero,
   MapPin,
-  Forward,
-  Crosshair
+  Forward
 } from 'lucide-react';
 import { Riple } from 'react-loading-indicators';
 
-export default function SelectedDeviceCard({ device, onRename, onFocus, loading }) {
+export default function SelectedDeviceCard({ device, onRename, onDelete, loading }) {
   if (loading) {
     return (
       <div className="p-4 bg-white rounded-xl flex items-center justify-center h-full w-full shadow-lg">
@@ -165,18 +164,17 @@ export default function SelectedDeviceCard({ device, onRename, onFocus, loading 
               window.open(`https://www.google.com/maps/dir/?api=1&destination=${device.lat},${device.lng}`, '_blank');
             }
           }}
-          className="py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition font-medium w-1/2 flex items-center justify-center gap-2"
+          className="py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition font-medium w-full flex items-center justify-center gap-2"
         >
           <Forward size={16} />
           Direction
         </button>
-        <button
-          onClick={() => onFocus(device)}
-          className="py-2 text-sm bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition font-medium w-1/2 flex items-center justify-center gap-2"
+        {/* <button
+          onClick={() => onDelete(device.collarId)}
+          className="py-2 text-sm bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium w-1/2"
         >
-          <Crosshair size={16} />
-          Focus
-        </button>
+          Delete
+        </button> */}
       </div>
     </div>
   );

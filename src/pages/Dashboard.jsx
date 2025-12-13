@@ -7,7 +7,6 @@ import useDevices from '../hooks/useDevices.js';
 export default function Dashboard({ user, onLogout, token }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
-  const [focusTrigger, setFocusTrigger] = useState(0);
   const { devices, loading } = useDevices(token);
 
   // Find the selected device object based on ID
@@ -31,15 +30,6 @@ export default function Dashboard({ user, onLogout, token }) {
     }
   }, [devices, selectedId]);
 
-  const handleFocus = (device) => {
-    if (device?.collarId) {
-      if (selectedId !== device.collarId) {
-        setSelectedId(device.collarId);
-      }
-      setFocusTrigger(prev => prev + 1);
-    }
-  };
-
   return (
     <div className="h-screen flex">
       <Sidebar
@@ -50,18 +40,12 @@ export default function Dashboard({ user, onLogout, token }) {
         devices={devices}
         selectedDevice={selectedDevice}
         onSelectDevice={(device) => setSelectedId(device?.collarId || null)}
-        onFocus={handleFocus}
         onLogout={onLogout}
         loading={loading}
       />
       <div className="flex-1 relative">
 
-        <MapView
-          devices={devices}
-          onSelectDevice={(device) => setSelectedId(device?.collarId || null)}
-          selectedDevice={selectedDevice}
-          focusTrigger={focusTrigger}
-        />
+        <MapView devices={devices} onSelectDevice={(device) => setSelectedId(device?.collarId || null)} selectedDevice={selectedDevice} />
       </div>
     </div>
   );
