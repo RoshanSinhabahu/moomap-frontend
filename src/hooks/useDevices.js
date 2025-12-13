@@ -42,7 +42,18 @@ export default function useDevices(token) {
       }
     }
 
-    if (token) fetchDevices();
+    if (token) {
+      // Initial fetch
+      fetchDevices();
+
+      // Set up polling to refresh device locations every 30 seconds
+      const intervalId = setInterval(() => {
+        fetchDevices();
+      }, 5000); // 5 seconds
+
+      // Clean up interval on component unmount or token change
+      return () => clearInterval(intervalId);
+    }
   }, [token]);
 
   return { devices, loading };

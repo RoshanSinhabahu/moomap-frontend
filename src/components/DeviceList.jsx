@@ -4,13 +4,6 @@ import Cow from '../assets/cow.png';
 export default function DeviceTileList({ devices, selectedDevice, onSelectDevice, isOpen, onToggle }) {
   const containerRef = useRef(null);
 
-  // Set first device as default on mount
-  useEffect(() => {
-    if (devices.length > 0 && !selectedDevice) {
-      onSelectDevice(devices[0]);
-    }
-  }, [devices, selectedDevice, onSelectDevice]);
-
   // Close when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {

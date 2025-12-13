@@ -26,12 +26,17 @@ L.Icon.Default.mergeOptions({
 
 function RecenterAutomatically({ devices }) {
   const map = useMap();
+  const hasInitialized = React.useRef(false);
 
   useEffect(() => {
-    const validDevices = devices.filter((d) => d.lat && d.lng);
-    if (validDevices.length > 0) {
-      const bounds = L.latLngBounds(validDevices.map((d) => [d.lat, d.lng]));
-      map.fitBounds(bounds, { padding: [50, 50] });
+    // Only run once on initial load when devices first become available
+    if (!hasInitialized.current && devices.length > 0) {
+      const validDevices = devices.filter((d) => d.lat && d.lng);
+      if (validDevices.length > 0) {
+        const bounds = L.latLngBounds(validDevices.map((d) => [d.lat, d.lng]));
+        map.fitBounds(bounds, { padding: [50, 50] });
+        hasInitialized.current = true;
+      }
     }
   }, [devices, map]);
 
@@ -40,13 +45,28 @@ function RecenterAutomatically({ devices }) {
 
 function FlyToActiveDevice({ activeDevice }) {
   const map = useMap();
+  const previousDeviceId = React.useRef(null);
+
   useEffect(() => {
+    // Only fly to device when the selection changes (not on position updates)
     if (activeDevice && activeDevice.lat && activeDevice.lng) {
-      map.flyTo([activeDevice.lat, activeDevice.lng], 16, {
-        animate: true,
-      });
+      const currentId = activeDevice.collarId || activeDevice.cattleId;
+
+      // Only fly if this is a user-initiated selection change (not initial auto-selection)
+      // Skip if previousDeviceId is null (initial selection from auto-select)
+      if (previousDeviceId.current !== null && currentId !== previousDeviceId.current) {
+        map.flyTo([activeDevice.lat, activeDevice.lng], 16, {
+          animate: true,
+        });
+      }
+      previousDeviceId.current = currentId;
+      // If same device, position updates automatically via marker, no need to fly
+    } else if (!activeDevice) {
+      // Reset when no device is selected
+      previousDeviceId.current = null;
     }
   }, [activeDevice, map]);
+
   return null;
 }
 
