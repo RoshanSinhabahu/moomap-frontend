@@ -55,7 +55,7 @@ export default function Login({ onLogin }) {
             </div>
           </div>
           <div className="flex w-full justify-center z-10 gap-4">
-            <a href="https://moomap.vercel.app/" target="_blank">
+            <a href="https://moomap.app/" target="_blank">
               <div className="flex bg-white/10 w-full h-14 rounded-full items-center px-5 cursor-pointer hover:bg-white/20 transition duration-200 gap-4">
                 <span className="flex-1 text-sm font-medium hover:underline">
                   Learn more about MooMap
@@ -78,14 +78,14 @@ export default function Login({ onLogin }) {
             <input
               name="username"
               placeholder="Mobile Number"
-              defaultValue="0714567890"
+              defaultValue="0771234567"
               className="pl-6 border-2 rounded-full w-full h-10 focus:outline-none focus:ring-2 focus:ring-[#1b3e66]-400"
             />
             <input
               name="password"
               type="password"
               placeholder="Password"
-              defaultValue="mypassword123"
+              defaultValue="12345678"
               className="pl-6 border-2 rounded-full w-full h-10 focus:outline-none focus:ring-2 focus:ring-[#1b3e66]-400"
             />
 

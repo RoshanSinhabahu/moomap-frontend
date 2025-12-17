@@ -3,6 +3,7 @@ import UserInfo from './UserInfo.jsx';
 import SelectedDeviceCard from './SelectedDeviceCard.jsx';
 import DeviceList from './DeviceList.jsx';
 
+
 export default function Sidebar({
   open,
   toggle,
@@ -34,6 +35,8 @@ export default function Sidebar({
         )}
         {open && !deviceListOpen && <SelectedDeviceCard device={selectedDevice} loading={loading} />}
       </div>
+
+
 
 
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
+import CountData from '../components/CountData.jsx';
 
 import MapView from '../components/MapView.jsx';
 import useDevices from '../hooks/useDevices.js';
@@ -46,6 +47,11 @@ export default function Dashboard({ user, onLogout, token }) {
       <div className="flex-1 relative">
 
         <MapView devices={devices} onSelectDevice={(device) => setSelectedId(device?.collarId || null)} selectedDevice={selectedDevice} />
+
+        {/* Count Data Overlay */}
+        <div className="absolute bottom-6 left-6 z-[400]">
+          <CountData devices={devices} />
+        </div>
       </div>
     </div>
   );
