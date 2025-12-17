@@ -47,7 +47,7 @@ function RecenterAutomatically({ devices }) {
 
 function FlyToActiveDevice({ activeDevice, focusTrigger }) {
     const map = useMap();
-    const previousTrigger = React.useRef(null);
+    const previousTrigger = React.useRef(focusTrigger); // Initialize with prop value
     const previousDeviceId = React.useRef(null);
 
     useEffect(() => {
@@ -58,15 +58,23 @@ function FlyToActiveDevice({ activeDevice, focusTrigger }) {
             const triggerChanged = focusTrigger !== previousTrigger.current;
             const deviceChanged = currentId !== previousDeviceId.current;
 
+            // Check if this is likely the initial auto-selection (no previous device tracked)
+            const isInitialSelection = previousDeviceId.current === null;
+
             // Note: we update refs *after* checking
-            if (triggerChanged || deviceChanged) {
+            // Explicitly ignore if triggerChanged is due to undefined vs null mismatch (should be handled by init, but explicit safety is good)
+            // But with useRef(focusTrigger), triggerChanged should be false initially if focusTrigger is undefined.
+
+            if (triggerChanged || (deviceChanged && !isInitialSelection)) {
                 map.flyTo([activeDevice.lat, activeDevice.lng], 16, {
                     animate: true,
                     duration: 1.5
                 });
-                previousTrigger.current = focusTrigger;
-                previousDeviceId.current = currentId;
             }
+
+            previousTrigger.current = focusTrigger;
+            previousDeviceId.current = currentId;
+
         }
     }, [activeDevice, focusTrigger, map]);
 
@@ -75,10 +83,16 @@ function FlyToActiveDevice({ activeDevice, focusTrigger }) {
 
 function RecenterMapButton({ devices, triggerRecenter }) {
     const map = useMap();
+    const latestDevices = React.useRef(devices);
+
+    // Keep ref updated with latest devices without triggering re-renders of the effect
+    useEffect(() => {
+        latestDevices.current = devices;
+    }, [devices]);
 
     useEffect(() => {
         if (triggerRecenter > 0) {
-            const validDevices = devices.filter((d) => d.lat && d.lng);
+            const validDevices = latestDevices.current.filter((d) => d.lat && d.lng);
             if (validDevices.length > 0) {
                 const bounds = L.latLngBounds(validDevices.map((d) => [d.lat, d.lng]));
                 if (bounds.isValid()) {
@@ -86,7 +100,7 @@ function RecenterMapButton({ devices, triggerRecenter }) {
                 }
             }
         }
-    }, [triggerRecenter, devices, map]);
+    }, [triggerRecenter, map]);
 
     return null;
 }
