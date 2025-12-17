@@ -24,3 +24,7 @@ This project is built using modern web technologies:
 - **Routing**: [React Router DOM](https://reactrouter.com/)
 - **Icons**: [Lucide React](https://lucide.dev/) & React Icons
 - **HTTP Client**: Native Fetch API
+
+### 📄 License
+
+_©2025 Moomap Team_
