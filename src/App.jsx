@@ -21,8 +21,9 @@ export default function App() {
   }, []);
 
   async function fetchCurrentUser(jwtToken) {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://api.moomap.app/api";
     try {
-      const res = await fetch("http://213.199.51.193:8000/api/users/me", {
+      const res = await fetch(`${apiBaseUrl}/users/me`, {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
       if (!res.ok) throw new Error("Failed to fetch user");

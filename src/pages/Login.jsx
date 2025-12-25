@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/cowhead-logo.png";
 import { HiArrowRight } from "react-icons/hi";
 
 export default function Login({ onLogin }) {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -12,14 +13,30 @@ export default function Login({ onLogin }) {
     const mobile = e.target.username.value.trim(); // your API uses mobile
     const password = e.target.password.value.trim();
 
+    setIsLoading(true);
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://api.moomap.app/api";
+    const loginUrl = `${apiBaseUrl}/users/login`;
+    console.log("Attempting login at:", loginUrl);
+
     try {
-      const res = await fetch("http://213.199.51.193:8000/api/users/login", {
+      const res = await fetch(loginUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, password }),
       });
 
-      const data = await res.json();
+      console.log("Response status:", res.status);
+      const contentType = res.headers.get("content-type");
+
+      let data = {};
+      if (contentType && contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        console.warn("Expected JSON but got:", text);
+        throw new Error(`Server returned non-JSON response: ${res.status}`);
+      }
+
       if (!res.ok) throw new Error(data.message || "Check Mobile or Password");
 
       // Save user and token
@@ -29,6 +46,8 @@ export default function Login({ onLogin }) {
     } catch (err) {
       console.error(err);
       alert(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
@@ -89,8 +108,38 @@ export default function Login({ onLogin }) {
               className="pl-6 border-2 rounded-full w-full h-10 focus:outline-none focus:ring-2 focus:ring-[#1b3e66]-400"
             />
 
-            <button className="text-[#1b3e66] hover:bg-[#1b3e66]/10 active:bg-[#1b3e66] active:text-white transition font-medium border-2 border-[#1b3e66] rounded-full w-full h-10 top-6 relative">
-              Login
+            <button
+              disabled={isLoading}
+              className={`text-[#1b3e66] hover:bg-[#1b3e66]/10 active:bg-[#1b3e66] active:text-white transition font-medium border-2 border-[#1b3e66] rounded-full w-full h-10 top-6 relative flex items-center justify-center gap-2 ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+            >
+              {isLoading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-[#1b3e66]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Logging in...</span>
+                </>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
         </div>

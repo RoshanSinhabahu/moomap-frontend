@@ -14,7 +14,8 @@ export default function UserDetailsPopup({ user, token, onClose, onLogout }) {
         return;
       }
       try {
-        const res = await fetch("http://213.199.51.193:8000/api/users/me", {
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://api.moomap.app/api";
+        const res = await fetch(`${apiBaseUrl}/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch details");

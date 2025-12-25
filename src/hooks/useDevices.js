@@ -7,9 +7,10 @@ export default function useDevices(token) {
 
   useEffect(() => {
     async function fetchDevices() {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://api.moomap.app/api";
       try {
         // Fetch all cattle
-        const res = await fetch('http://213.199.51.193:8000/api/cattles', {
+        const res = await fetch(`${apiBaseUrl}/cattles`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const cattles = await res.json();
@@ -18,7 +19,7 @@ export default function useDevices(token) {
         const devicesWithLocation = await Promise.all(
           cattles.map(async (cattle) => {
             const collarRes = await fetch(
-              `http://213.199.51.193:8000/api/collar-data/${cattle.collarId}`,
+              `${apiBaseUrl}/collar-data/${cattle.collarId}`,
               { headers: { Authorization: `Bearer ${token}` } }
             );
             const collarData = await collarRes.json();
