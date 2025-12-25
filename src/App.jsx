@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { Riple } from 'react-loading-indicators';
+import Snowfall from "./components/Snowfall.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -48,6 +49,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <Snowfall />
       <Routes>
         <Route
           path="/"
